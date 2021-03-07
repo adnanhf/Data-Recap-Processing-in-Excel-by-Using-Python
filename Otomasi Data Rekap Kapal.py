@@ -38,7 +38,7 @@ print(pd.to_numeric(rekap_bunyu.GT))
 ''' ------------------------------Akhir Kegiatan---------------------------'''
 
 ''' ----------------------Kegiatan pada 05 Maret 2021----------------------'''
-
+'''
 # Impor library
 import pandas as pd
 
@@ -65,6 +65,51 @@ def main():
     df_to_work=drop_nan_cols(df_to_work)
     df_to_work=drop_nan_rows(df_to_work)
     print(df_to_work)
+    
+if __name__ == '__main__':
+    main()
+'''
+''' ------------------------------Akhir Kegiatan---------------------------'''
+
+''' ----------------------Kegiatan pada 06 Maret 2021----------------------'''
+
+# Impor library
+import pandas as pd
+
+# Fungsi untuk membaca seluruh sheet di excel
+def read_excel_file(filename='SAMPLE DATA REKAP.xlsx',col_title=4):
+    excel_df=pd.read_excel(filename,sheet_name=None,header=col_title)
+    print('terdapat',len(excel_df),'sheet di dalam file ini')
+    return excel_df
+
+# Fungsi untuk menghapus kolom data yang kosong pada seluruh sheet
+def drop_nan_cols(dfname):
+    for i in dfname:
+        dfname[i].dropna(axis=1,how='all',inplace=True)
+    return dfname
+
+# Fungsi untuk menghapus baris data yang kosong pada seluruh sheet
+def drop_nan_rows(dfname):
+    for i in dfname:
+        dfname[i].dropna(axis=0,how='all',inplace=True)
+    return dfname
+
+# Fungsi memilih kategori SIB Kecil
+def choose_for_small_sib(dfname):
+    print(dfname['REKAP'].GT)
+    for i in dfname['REKAP'].GT:
+        if i < 500:
+            print('Input to SIB Kecil')
+        else:
+            pass
+            print('Let this pass')
+
+# Fungsi utama untuk menjalankan program
+def main():
+    df_to_work=read_excel_file()
+    df_to_work=drop_nan_cols(df_to_work)
+    df_to_work=drop_nan_rows(df_to_work)
+    choose_for_small_sib(df_to_work)
     
 if __name__ == '__main__':
     main()
