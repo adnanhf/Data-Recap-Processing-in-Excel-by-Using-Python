@@ -12,66 +12,7 @@ Milestone program ini adalah:
     - Menulis data di baris dan kolom tertentu
 """
 
-''' ----------------------Kegiatan pada 04 Maret 2021----------------------'''
-'''
-# Impor library
-import pandas as pd
-
-# Membaca data, variabel rekap bunyu bertipe DataFrame
-rekap_bunyu = pd.read_excel('SAMPLE DATA REKAP.xlsx',
-                            sheet_name='REKAP',
-                            header=4,
-                            usecols=[x for x in range(26)])
-
-# Menghapus baris data yang kosong
-rekap_bunyu.dropna(how="all",inplace=True)
-
-# Mengganti nama header kolom di sheet rekap bunyu
-rekap_bunyu.rename(columns={'NO SPB':'NO SPB KELUAR','TANGGAL':'TANGGAL TIBA',
-                            'JAM':'JAM TIBA','NO SPB.1':'NO SPB MASUK',
-                            'TANGGAL.1':'TANGGAL TOLAK','JAM.1':'JAM TOLAK'},
-                   inplace=True)
-
-# Melihat isi kolom
-print(pd.to_numeric(rekap_bunyu.GT))
-'''
-''' ------------------------------Akhir Kegiatan---------------------------'''
-
-''' ----------------------Kegiatan pada 05 Maret 2021----------------------'''
-'''
-# Impor library
-import pandas as pd
-
-# Fungsi untuk membaca seluruh sheet di excel
-def read_excel_file(filename='SAMPLE DATA REKAP.xlsx',col_title=4):
-    excel_df=pd.read_excel(filename,sheet_name=None,header=col_title)
-    print('terdapat',len(excel_df),'sheet di dalam file ini')
-    return excel_df
-
-# Fungsi untuk menghapus kolom data yang kosong pada seluruh sheet
-def drop_nan_cols(dfname):
-    for i in dfname:
-        dfname[i].dropna(axis=1,how='all',inplace=True)
-    return dfname
-
-# Fungsi untuk menghapus baris data yang kosong pada seluruh sheet
-def drop_nan_rows(dfname):
-    for i in dfname:
-        dfname[i].dropna(axis=0,how='all',inplace=True)
-    return dfname
-
-def main():
-    df_to_work=read_excel_file()
-    df_to_work=drop_nan_cols(df_to_work)
-    df_to_work=drop_nan_rows(df_to_work)
-    print(df_to_work)
-    
-if __name__ == '__main__':
-    main()
-'''
-''' ------------------------------Akhir Kegiatan---------------------------'''
-
-''' ----------------------Kegiatan pada 06 Maret 2021----------------------'''
+''' ----------------------Code Writing at 11th March 2021----------------------'''
 
 # Impor library
 import pandas as pd
@@ -94,24 +35,54 @@ def drop_nan_rows(dfname):
         dfname[i].dropna(axis=0,how='all',inplace=True)
     return dfname
 
-# Fungsi memilih kategori SIB Kecil
-def choose_for_small_sib(dfname):
-    print(dfname['REKAP'].GT)
-    for i in dfname['REKAP'].GT:
-        if i < 500:
-            print('Input to SIB Kecil')
-        else:
-            pass
-            print('Let this pass')
+# Fungsi mengubah format data ke list
+def conv_df_to_list(dfname):
+    if type(dfname) is not pd.DataFrame:
+        nested_list=[]
+        for i in dfname:
+            child_list = [dfname[i].columns.values.tolist()] + dfname[i].values.tolist()
+            nested_list.append(child_list)
+        return nested_list
+    elif type(dfname) is pd.DataFrame:
+        main_list = [dfname.columns.values.tolist()] + dfname.values.tolist()
+        return main_list
+
+# Fungsi memilih data untuk SIB Kecil
+def choose_for_small_sib(listdf):
+    if len(listdf) > 1:
+        
+        dict_small_sib = {
+            'Nama Kapal':[],
+            'Nama Nahkoda':[],
+            'Berat Kotor (GT)':[],
+            'Berat Bersih (NT)':[],
+            'Tanda Selar Menurut Pas Tahunan':[],
+            'Tempat Kedudukan Kapal':[],
+            'Tanggal Tiba':[],
+            'Terakhir Singgah dari':[],
+            'Kode Muatan Datang':[],
+            'Tanggal Berangkat':[],
+            'Persinggahan Pertama':[],
+            'Kode Muatan Berangkat':[],
+            'Keagenan/Kepemilikan':[],
+            'KET.':[]}
+        
+        for i in range(len(listdf)):
+            for j in range(len(listdf[i])):
+                if j == 0:
+                    pass
+                elif j != 0:
+                    print(len(listdf[i][j]))
 
 # Fungsi utama untuk menjalankan program
 def main():
     df_to_work=read_excel_file()
     df_to_work=drop_nan_cols(df_to_work)
     df_to_work=drop_nan_rows(df_to_work)
-    choose_for_small_sib(df_to_work)
+    list_df=conv_df_to_list(df_to_work)
+    list_df_small_sib = choose_for_small_sib(list_df)
     
 if __name__ == '__main__':
     main()
 
-''' ------------------------------Akhir Kegiatan---------------------------'''
+''' ------------------------------End of The Code Writing---------------------------'''
