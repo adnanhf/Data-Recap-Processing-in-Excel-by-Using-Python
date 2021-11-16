@@ -23,14 +23,15 @@ The Milestone:
     - Write data on certain row(s) or column(s) [Done]
 """
 
-''' ----------------------Code Writing at 29th October 2021----------------------'''
+''' ----------------------Code Writing at 16th November 2021----------------------'''
 
 # Importing library
 import pandas as pd
 import numpy as np
 from systemtools.number import *
 
-# Read data function
+# functions for general purpose
+#1 read data
 def read_excel_file(filename='None',col_title=4):
     dfname=pd.read_excel(filename,sheet_name=None,header=col_title)
     #printing number of sheet in an excel file
@@ -50,6 +51,14 @@ def read_excel_file(filename='None',col_title=4):
 
     return nested_list
 
+#2 find root index in a nested list
+def nestedlist_rootindex(thelist, char1, char2):
+    for i in range(len(thelist)):
+        if char1 == thelist[i][0] and char2 == thelist[i][1]:
+            return i
+
+# core functions, for monthly report
+#1 SIB report functions
 def sib_based(data=None):
     #change writing style at variable initiation
     dict_sibkecil = {'Nomor':[],'Nama Kapal':[],'Nama Nahkoda':[],
@@ -114,7 +123,7 @@ def sib_based(data=None):
 
     return sib_kecil,sib_gede
 
-#merging four functions into one
+#2 TKII style report
 def tkii_based(data=None):
     #this function covers previous four functions, because they have the same format
     dict_combined = {'Nomor':[],'Kode Kapal':[],'Nama Kapal':[],'Bendera':[],'Keagenan':[],'GT':[],
@@ -533,7 +542,7 @@ def tkii_based(data=None):
         foutput[funcs].drop(['Jam Tolak','Lokasi Tolak','Lokasi Bongkar','Lokasi Muat','Kategori'],axis=1,inplace=True)
     return foutput
 
-#merging thirteen functions into one
+#3 Domestic & Export style report
 def domexp_based(data=None):
     #this function covers previous thirteen functions, because they have the same format
     dict_domcateg = {'Nomor':[],'Kode Kapal':[],'Nama Kapal':[],'Keagenan':[],'Bendera':[],'GT':[],
@@ -907,6 +916,7 @@ def domexp_based(data=None):
 
     return foutput
 
+#4 Port Clearance style report
 def port_clr(data=None):
     #change writing style for initiating a dictionary
     dict_port = {'Nomor':[],'Kode SPB':[],'Nomor SPB':[],'Nomor Reg':[],'Kode Kapal':[],'Nama Kapal':[],
@@ -1018,10 +1028,11 @@ def port_clr(data=None):
     
     return portclr
 
+#5 Loads Counter
 def goods(data=None):
     #function for summarizing shiploads, splitted to two categories: Domestic & Export
     dogarname, dogarnum, dogarmea, dodepname, dodepnum, dodepmea = [],[],[],[],[],[]
-    exgarname, exgarnum, exgarmea, exdepname, exdepnum, exdepmea = [],[],[],[],[],[]
+    exdepname, exdepnum, exdepmea = [],[],[],[],[],[]
 
     #inserting shipload's names and numbers
     for i in range(len(data)):
@@ -1062,44 +1073,24 @@ def goods(data=None):
                     dodepname.append(data[i][j][29])
                     dodepnum.append(data[i][j][30])
                     dodepmea.append(data[i][j][31])
-
+                    
             #inserting data for exporting operation
             elif data[i][j][35] == 'EKSPOR':
-                if ';' in data[i][j][18] and ';' in data[i][j][29]:
-                    garr_temp,narr_temp,marr_temp = data[i][j][18].split('; '),data[i][j][19].split('; '),data[i][j][20].split('; ')
-                    gdep_temp,ndep_temp,mdep_temp = data[i][j][29].split('; '),data[i][j][30].split('; '),data[i][j][31].split('; ')
-
-                    exgarname.extend(garr_temp)
-                    exgarnum.extend(narr_temp)
-                    exgarmea.extend(marr_temp)
-
-                    exdepname.extend(gdep_temp)
-                    exdepnum.extend(ndep_temp)
-                    exdepmea.extend(mdep_temp)
-
-                elif ';' in data[i][j][18] and ';' not in data[i][j][29]:
-                    garr_temp,narr_temp,marr_temp = data[i][j][18].split('; '),data[i][j][19].split('; '),data[i][j][20].split('; ')
-
-                    exgarname.extend(garr_temp)
-                    exgarnum.extend(narr_temp)
-                    exgarmea.extend(marr_temp)
-
-                elif ';' not in data[i][j][18] and ';' in data[i][j][29]:
+                if ';' in data[i][j][29]:
                     gdep_temp,ndep_temp,mdep_temp = data[i][j][29].split('; '),data[i][j][30].split('; '),data[i][j][31].split('; ')
 
                     exdepname.extend(gdep_temp)
                     exdepnum.extend(ndep_temp)
                     exdepmea.extend(mdep_temp)
 
-                elif ';' not in data[i][j][18] and ';' not in data[i][j][29]:
-                    exgarname.append(data[i][j][18])
-                    exgarnum.append(data[i][j][19])
-                    exgarmea.append(data[i][j][20])
-
+                elif ';' not in data[i][j][29]:
                     exdepname.append(data[i][j][29])
                     exdepnum.append(data[i][j][30])
                     exdepmea.append(data[i][j][31])
-
+                
+                else:
+                    pass
+                
     #data cleaning from certain conditions ie. nan and data type
     dogarname = [x for x in dogarname if x != 'NIHIL']
     dogarnum = list(map(str,[x for x in dogarnum]))
@@ -1111,91 +1102,62 @@ def goods(data=None):
     dodepnum = list(map(float,[parseNumber(x) for x in dodepnum if x != '--']))
     dodepmea = [x for x in dodepmea if x != '--']
 
-    exgarname = [x for x in exgarname if x != 'NIHIL']
-    exgarnum = list(map(str,[x for x in exgarnum]))
-    exgarnum = list(map(float,[parseNumber(x) for x in exgarnum if x != '--']))
-    exgarmea = [x for x in exgarmea if x != '--']
-
     exdepname = [x for x in exdepname if x != 'NIHIL']
     exdepnum = list(map(str,[x for x in exdepnum]))
     exdepnum = list(map(float,[parseNumber(x) for x in exdepnum if x != '--']))
     exdepmea = [x for x in exdepmea if x != '--']
     
-    #collecting shipload's names
-    doloadname = dogarname
-    doloadname.extend(dodepname)
-    exloadname = exgarname
-    exloadname.extend(exdepname)
-
-    doloadname = np.unique(doloadname).tolist()
-    exloadname = np.unique(exloadname).tolist()
-
     #calculating shipload's summary
     domarr = pd.DataFrame(list(zip(dogarname,dogarnum,dogarmea)), columns = ['Nama', 'Jumlah','Satuan'])
     domdep = pd.DataFrame(list(zip(dodepname,dodepnum,dodepmea)), columns = ['Nama', 'Jumlah','Satuan'])
 
-    exparr = pd.DataFrame(list(zip(exgarname,exgarnum,exgarmea)), columns = ['Nama', 'Jumlah','Satuan'])
     expdep = pd.DataFrame(list(zip(exdepname,exdepnum,exdepmea)), columns = ['Nama', 'Jumlah','Satuan'])
-    
+
     goardom = domarr.groupby(['Nama','Satuan'],as_index=False).sum('Jumlah')
     godedom = domdep.groupby(['Nama','Satuan'],as_index=False).sum('Jumlah')
     domarr,domdep = goardom.values.tolist(),godedom.values.tolist()
 
-    goarexp = exparr.groupby(['Nama','Satuan'],as_index=False).sum('Jumlah')
     godeexp = expdep.groupby(['Nama','Satuan'],as_index=False).sum('Jumlah')
-    exparr,expdep = goarexp.values.tolist(),godeexp.values.tolist()
-
+    expdep = godeexp.values.tolist()
+    
+    #rounding numbers to 3 decimal places
+    for glist in [domarr,domdep,expdep]:
+        for i in range(len(glist)):
+            peek = str(glist[i][2])
+            if len(peek[peek.find('.')+1:]) > 3:
+                glist[i][2] = float(round(glist[i][2],3))
+            elif len(peek[peek.find('.')+1:]) <= 3:
+                pass
+            else:
+                pass
+            
+    #collecting shipload's names
+    sumcag = [glist[i][0]+'-'+glist[i][1] for glist in [domarr,domdep] for i in range(len(glist))]
+    sumcag = np.unique(sumcag).tolist()
+    
     #writing summary, first for domestic operation
-    lname,larr,ldep = [],[],[]
-    for name in doloadname:
-        if any(domarr[i][0] == name for i in range(len(domarr))) and any(domdep[i][0] == name for i in range(len(domdep))):
-            for i in range(len(domarr)):
-                if name == domarr[i][0]:
-                    lname.append(name)
-                    larr.append(str(domarr[i][2])+' '+domarr[i][1])
-            for i in range(len(domdep)):
-                if name == domdep[i][0]:
-                    ldep.append(str(domdep[i][2])+' '+domdep[i][1])
-        elif any(domarr[i][0] == name for i in range(len(domarr))) and not any(domdep[i][0] == name for i in range(len(domdep))):
-            for i in range(len(domarr)):
-                if name == domarr[i][0]:
-                    lname.append(name)
-                    larr.append(str(domarr[i][2])+' '+domarr[i][1])
-                    ldep.append('--')
-        elif not any(domarr[i][0] == name for i in range(len(domarr))) and any(domdep[i][0] == name for i in range(len(domdep))):
-            for i in range(len(domdep)):
-                if name == domdep[i][0]:
-                    lname.append(name)
-                    larr.append('--')
-                    ldep.append(str(domdep[i][2])+' '+domdep[i][1])
+    sumnam,sumar,sumde = [],[],[]
+    for i in range(len(sumcag)):
+        gname,gmea = sumcag[i].split('-')
+        sumnam.append(gname)
+        try:
+            j = nestedlist_rootindex(domarr, gname, gmea)
+            sumar.append(str(domarr[j][2])+' '+domarr[j][1])
+        except TypeError:
+            sumar.append('--')
+
+        try:
+            j = nestedlist_rootindex(domdep, gname, gmea)
+            sumde.append(str(domdep[j][2])+' '+domdep[j][1])
+        except TypeError:
+            sumde.append('--')
     
     #second, for exporting operation
-    xname,xarr,xdep = [],[],[]
-    for name in exloadname:
-        if any(exparr[i][0] == name for i in range(len(exparr))) and any(expdep[i][0] == name for i in range(len(expdep))):
-            for i in range(len(exparr)):
-                if name == exparr[i][0]:
-                    xname.append(name)
-                    xarr.append(str(exparr[i][2])+' '+exparr[i][1])
-            for i in range(len(expdep)):
-                if name == expdep[i][0]:
-                    xdep.append(str(expdep[i][2])+' '+expdep[i][1])
-        elif any(exparr[i][0] == name for i in range(len(exparr))) and not any(expdep[i][0] == name for i in range(len(expdep))):
-            for i in range(len(exparr)):
-                if name == exparr[i][0]:
-                    xname.append(name)
-                    xarr.append(str(exparr[i][2])+' '+exparr[i][1])
-                    xdep.append('--')
-        elif not any(exparr[i][0] == name for i in range(len(exparr))) and any(expdep[i][0] == name for i in range(len(expdep))):
-            for i in range(len(expdep)):
-                if name == expdep[i][0]:
-                    xname.append(name)
-                    xarr.append('--')
-                    xdep.append(str(expdep[i][2])+' '+expdep[i][1])
+    expna,expar,expde = [expdep[0][0]],['--'],[str(expdep[0][2])+' '+expdep[0][1]]
     
     #finalizing format for summaries
-    goods_dom = pd.DataFrame(list(zip(lname,larr,ldep)), columns = ['Nama', 'Bongkar','Muat'])
-    goods_exp = pd.DataFrame(list(zip(xname,xarr,xdep)), columns = ['Nama', 'Bongkar','Muat'])
+    goods_dom = pd.DataFrame(list(zip(sumnam,sumar,sumde)), columns = ['Nama', 'Bongkar','Muat'])
+    goods_exp = pd.DataFrame(list(zip(expna,expar,expde)), columns = ['Nama', 'Bongkar','Muat'])
 
     return goods_dom,goods_exp
 
@@ -1206,10 +1168,10 @@ def main():
     gabungan,bunyu,albunyu,nihil = tkii_based(data=datadf)
     dom,exp,swt,baba,gear,bape,cril,albe,fuel,kndr,wood,sand,cmpr = domexp_based(data=datadf)
     spb = port_clr(data=datadf)
+    port_clr(data=datadf)
     domsum,expsum = goods(data=datadf)
-    goods(data=datadf)
 
-    filewriter = pd.ExcelWriter('data output.xlsx')
+    filewriter = pd.ExcelWriter('Untuk Hasil Olah Data.xlsx')
 
     sibk.to_excel(filewriter,'SIB Kecil',index=False)
     sibg.to_excel(filewriter,'SIB Besar',index=False)
