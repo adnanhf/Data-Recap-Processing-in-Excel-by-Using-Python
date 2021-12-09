@@ -1,10 +1,10 @@
-# Data Recap Processing by Using Python
+# Hi...
 
-## What I am doing
-This is a source code for easing a work of doing recap in Ms. Excel. This code is written to categorize data that has entered a month, then export another Ms. Excel file with addition sheets as a report. By this way, an employee doesn't have to type the report manually.
+## My Motive
+I saw staff at my office doing a monthly recapitulation using Microsoft Excel manually. It takes around 3 to 5 days for one person to finish. Then I started to write this program, hoping to ease the pressure and speed up the time to complete the work.
 
-## Boundary
-My code is designed for the harbor's report on a local harbormaster, where the data contains of every ship information that docked at the harbor.
+## Disclaimer
+This program's design would process raw data into a hard-coded output. In my case, the data contains every ship's information that docked at the harbor. If anyone would use this code, they will need to re-write the properties of both the input and output.
 
-## How does my code work?
-(coming soon)
+## How Does My Code Work?
+(To be documented)
