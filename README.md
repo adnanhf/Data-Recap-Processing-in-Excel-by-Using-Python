@@ -4,13 +4,13 @@
 I saw staff at my office doing a monthly recapitulation using Microsoft Excel manually. It takes around 3 to 5 days for one person to finish. Then I started to write this program, hoping to ease the pressure and speed up the time to complete the work.
 
 ## Disclaimer
-This program's design would process raw data into a hard-coded output. In my case, the data contains every ship's information that docked at the harbor. If anyone would use this code, they will need to re-write the properties of both the input and output.
+This program's design would process raw data into a hard-coded output. If anyone would use this code, they will need to re-write the properties of both the input and output.
 
 ## Program's workflow
 
 ### A. File preparations
 1. Manually input data to an `xlsx` file
-2. Place the `xlsx` file together with main.py
+2. Place the `xlsx` file inside `files` folder
 
 ### B. Running Sequence in main.py
 1. Reads the `xlsx` file
