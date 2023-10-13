@@ -1,6 +1,6 @@
 import json
 import general
-
+import operator as op
 
 def clearance(dataframe=None):
     source_dict = dataframe.to_dict(orient='list')
@@ -23,12 +23,8 @@ def clearance(dataframe=None):
     # Add a new column (Number) to destination
     destination_dict['NUMBER'] = list(range(1, len_source+1))
 
-    # Add new row everytime found ";"
-    for key in destination_dict:
-        # Check if the entire list contain only string
-        if general.contain_only(destination_dict[key], str):
-            print('yes')
-            print(destination_dict[key])
-            # for item in destination_dict[key]:
-                # if item.find('; '):
-                    # print('Yes')
+    # Mark keys in dictionary that contains ";"
+    marked_keys = general.semicolon_list(destination_dict)
+
+    # Using marked_keys to add new rows for ';' occurrence
+
